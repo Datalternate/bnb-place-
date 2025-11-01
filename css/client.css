@@ -1,1 +1,22 @@
 
+body {
+  font-family: sans-serif;
+  background: #f9f9f9;
+  padding: 2rem;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
+}
+input, select, button {
+  padding: 0.8rem;
+  font-size: 1rem;
+}
+button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
