@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard – The BnB</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+
+  <section>
+    <h2>Pending Bookings</h2>
+    <table id="bookingsTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Check-in</th>
+          <th>Check-out</th>
+          <th>Listing</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows will be injected by JS -->
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Add / Edit Listing</h2>
+    <form id="listingForm">
+      <input type="text" name="id" placeholder="Listing ID (for edit)" />
+      <input type="text" name="name" placeholder="Listing Name" required />
+      <input type="text" name="location" placeholder="Location" required />
+      <input type="number" name="price" placeholder="Price per night" required />
+      <button type="submit">Save Listing</button>
+    </form>
+  </section>
+</body>
+<script src="js/admin.js"></script>
+</html>
