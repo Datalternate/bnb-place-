@@ -1,1 +1,24 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The BnB Booking</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <h1>Book Your Stay</h1>
+  <form id="bookingForm">
+    <input type="text" name="name" placeholder="Full Name" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="date" name="checkin" required />
+    <input type="date" name="checkout" required />
+    <select name="listing" required>
+      <option value="">Select Listing</option>
+      <option value="bnb001">Ocean View</option>
+      <option value="bnb002">Mountain Cabin</option>
+    </select>
+    <button type="submit">Book Now</button>
+  </form>
+</body>
+<script src="js/client.js"></script>
+</html>
