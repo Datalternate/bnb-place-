@@ -1,49 +1,1393 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Admin Dashboard – The BnB</title>
-  <link rel="stylesheet" href="css/admin.css" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - The BnB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Poppins:wght@600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --coral: #FF6B6B;
+            --coral-dark: #E85555;
+            --teal: #4ECDC4;
+            --teal-dark: #3DBDB4;
+            --navy: #2C3E50;
+            --cream: #FFF8F0;
+            --white: #FFFFFF;
+            --gray: #7F8C8D;
+            --light-gray: #E0E0E0;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--navy);
+            background-color: var(--cream);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        button,
+        a,
+        input,
+        select,
+        textarea,
+        .card,
+        .interactive,
+        .stat-card,
+        .table-row,
+        .action-button {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out,
+                background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(78, 205, 196, 0.3) 100%);
+            padding: 24px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--white);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--shadow-hover);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--coral) 0%, var(--teal) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: var(--white);
+            font-size: 32px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 44px;
+            padding: 12px 12px 12px 40px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--coral);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+
+        .login-button {
+            width: 100%;
+            height: 48px;
+            background-color: var(--coral);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .login-button:hover {
+            background-color: var(--coral-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background-color: #FEE2E2;
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message.active {
+            display: flex;
+        }
+
+        .security-badge {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--light-gray);
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .dashboard-container.active {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: var(--navy);
+            color: var(--white);
+            padding: 24px 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--coral);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 24px;
+            margin-bottom: 32px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            color: var(--white);
+            background-color: rgba(255, 107, 107, 0.1);
+            border-left: 3px solid var(--coral);
+        }
+
+        .sidebar-nav i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 32px;
+            width: calc(100% - 240px);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .dashboard-title {
+            font-size: 32px;
+            color: var(--navy);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--coral) 0%, var(--teal) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .admin-name {
+            font-weight: 600;
+            color: var(--navy);
+            font-size: 14px;
+        }
+
+        .view-site-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background-color: var(--teal);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .view-site-link:hover {
+            background-color: var(--teal-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .logout-button {
+            padding: 10px 20px;
+            background-color: transparent;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: var(--danger);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-icon.bookings {
+            background-color: rgba(255, 107, 107, 0.1);
+            color: var(--coral);
+        }
+
+        .stat-icon.pending {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-icon.listings {
+            background-color: rgba(78, 205, 196, 0.1);
+            color: var(--teal);
+        }
+
+        .stat-icon.revenue {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .stat-badge {
+            display: inline-block;
+            background-color: var(--warning);
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: var(--navy);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .bookings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bookings-table thead {
+            background-color: var(--cream);
+        }
+
+        .bookings-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--navy);
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .bookings-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .table-row {
+            background-color: var(--white);
+        }
+
+        .table-row:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+
+        .table-row:hover {
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal) 0%, var(--coral) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--navy);
+            font-size: 14px;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .listing-link {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .listing-link:hover {
+            color: var(--teal-dark);
+            text-decoration: underline;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .approve-button {
+            background-color: var(--success);
+            color: var(--white);
+        }
+
+        .approve-button:hover {
+            background-color: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .delete-button {
+            background-color: transparent;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        .delete-button:hover {
+            background-color: var(--danger);
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            color: var(--light-gray);
+            margin-bottom: 16px;
+        }
+
+        .empty-state-text {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        /* Form */
+        .listing-form {
+            max-width: 600px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-helper {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .image-upload-zone {
+            border: 2px dashed var(--light-gray);
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: var(--cream);
+        }
+
+        .image-upload-zone:hover {
+            border-color: var(--coral);
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+
+        .image-upload-zone.dragover {
+            border-color: var(--coral);
+            background-color: rgba(255, 107, 107, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--gray);
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            color: var(--navy);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .upload-subtext {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .image-preview {
+            margin-top: 16px;
+            display: none;
+        }
+
+        .image-preview.active {
+            display: block;
+        }
+
+        .preview-thumbnail {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--light-gray);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .primary-button {
+            flex: 1;
+            height: 48px;
+            background-color: var(--coral);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .primary-button:hover {
+            background-color: var(--coral-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .secondary-button {
+            flex: 1;
+            height: 48px;
+            background-color: transparent;
+            color: var(--navy);
+            border: 2px solid var(--navy);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-button:hover {
+            background-color: var(--navy);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* Success Message */
+        .success-notification {
+            position: fixed;
+            top: 32px;
+            right: 32px;
+            background-color: var(--success);
+            color: var(--white);
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-hover);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 3000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .success-notification.active {
+            display: flex;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .sidebar-logo span,
+            .sidebar-nav span {
+                display: none;
+            }
+
+            .sidebar-logo {
+                justify-content: center;
+            }
+
+            .sidebar-nav a {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .main-content {
+                margin-left: 60px;
+                width: calc(100% - 60px);
+                padding: 16px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+
+            .actions-cell {
+                flex-direction: column;
+            }
+
+            .login-card {
+                padding: 24px;
+            }
+
+            .success-notification {
+                left: 16px;
+                right: 16px;
+                top: 16px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Hide file input */
+        #imageUpload {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Admin Dashboard</h1>
-    <nav>
-      <a href="index.html">← Back to Booking Page</a>
-    </nav>
-  </header>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h1 class="login-title">Admin Login</h1>
+                <p class="login-subtitle">Access your dashboard</p>
+            </div>
 
-  <section>
-    <h2>Pending Bookings</h2>
-    <table id="bookingsTable">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Check-in</th>
-          <th>Check-out</th>
-          <th>Listing</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Rows will be injected by JS -->
-      </tbody>
-    </table>
-  </section>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" class="form-input" id="username" name="username" required="" placeholder="Enter your username">
+                    </div>
+                </div>
 
-  <section>
-    <h2>Add / Edit Listing</h2>
-    <form id="listingForm">
-      <input type="text" name="id" placeholder="Listing ID (for edit)" />
-      <input type="text" name="name" placeholder="Listing Name" required />
-      <input type="text" name="location" placeholder="Location" required />
-      <input type="number" name="price" placeholder="Price per night" required />
-      <button type="submit">Save Listing</button>
-    </form>
-  </section>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-key input-icon"></i>
+                        <input type="password" class="form-input" id="password" name="password" required="" placeholder="Enter your password">
+                    </div>
+                </div>
 
-  <script src="js/admin.js"></script>
-</body>
-</html>
+                <button type="submit" class="login-button">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+
+                <div class="error-message" id="loginError">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Invalid username or password. Please try again.</span>
+                </div>
+            </form>
+
+            <div class="security-badge">
+                <i class="fas fa-shield-alt"></i> Secure Admin Access
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard-container" id="dashboardPage">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="#" class="sidebar-logo">
+                <i class="fas fa-home"></i>
+                <span>The BnB</span>
+            </a>
+
+            <ul class="sidebar-nav">
+                <li><a href="#dashboard" class="active"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
+                <li><a href="#bookings"><i class="fas fa-calendar-check"></i><span>Bookings</span></a></li>
+                <li><a href="#listings"><i class="fas fa-building"></i><span>Listings</span></a></li>
+                <li><a href="#analytics"><i class="fas fa-chart-bar"></i><span>Analytics</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Dashboard</h1>
+                <div class="header-actions">
+                    <div class="admin-info">
+                        <div class="admin-avatar">AD</div>
+                        <span class="admin-name">Admin User</span>
+                    </div>
+                    <a href="index.html" class="view-site-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        View Client Site
+                    </a>
+                    <button class="logout-button" id="logoutButton">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Total Bookings</span>
+                        <div class="stat-icon bookings">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="totalBookings">24</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Pending Approvals</span>
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">
+                        <span id="pendingCount">3</span>
+                        <span class="stat-badge">NEW</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Active Listings</span>
+                        <div class="stat-icon listings">
+                            <i class="fas fa-building"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="activeListings">6</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Revenue</span>
+                        <div class="stat-icon revenue">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="totalRevenue">$3,240</div>
+                </div>
+            </div>
+
+            <!-- Pending Bookings Section -->
+            <div class="section-card" id="bookingsSection">
+                <div class="section-header">
+                    <h2 class="section-title">Pending Bookings</h2>
+                </div>
+
+                <div class="table-container">
+                    <table class="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Listing</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <tr class="table-row">
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">JS</div>
+                                        <div class="user-details">
+                                            <span class="user-name">John Smith</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="user-email">john.smith@email.com</span></td>
+                                <td>May 15, 2025</td>
+                                <td>May 20, 2025</td>
+                                <td><a href="#" class="listing-link">Cozy Downtown Loft</a></td>
+                                <td>
+                                    <div class="actions-cell">
+                                        <button class="action-button approve-button" onclick="approveBooking(1)">
+                                            <i class="fas fa-check"></i> Approve
+                                        </button>
+                                        <button class="action-button delete-button" onclick="deleteBooking(1)">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="table-row">
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">EJ</div>
+                                        <div class="user-details">
+                                            <span class="user-name">Emily Johnson</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="user-email">emily.j@email.com</span></td>
+                                <td>Jun 1, 2025</td>
+                                <td>Jun 7, 2025</td>
+                                <td><a href="#" class="listing-link">Beach House Paradise</a></td>
+                                <td>
+                                    <div class="actions-cell">
+                                        <button class="action-button approve-button" onclick="approveBooking(2)">
+                                            <i class="fas fa-check"></i> Approve
+                                        </button>
+                                        <button class="action-button delete-button" onclick="deleteBooking(2)">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="table-row">
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">MW</div>
+                                        <div class="user-details">
+                                            <span class="user-name">Michael Williams</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="user-email">m.williams@email.com</span></td>
+                                <td>May 28, 2025</td>
+                                <td>Jun 2, 2025</td>
+                                <td><a href="#" class="listing-link">Mountain Retreat</a></td>
+                                <td>
+                                    <div class="actions-cell">
+                                        <button class="action-button approve-button" onclick="approveBooking(3)">
+                                            <i class="fas fa-check"></i> Approve
+                                        </button>
+                                        <button class="action-button delete-button" onclick="deleteBooking(3)">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Add/Edit Listings Section -->
+            <div class="section-card" id="listingsSection">
+                <div class="section-header">
+                    <h2 class="section-title">Manage Listings</h2>
+                </div>
+
+                <form class="listing-form" id="listingForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="listingId">Listing ID (Optional)</label>
+                            <input type="text" class="form-input" id="listingId" name="listingId" placeholder="Auto-generated">
+                            <p class="form-helper">Leave blank for new listing</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="listingPrice">Price per Night</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-dollar-sign input-icon"></i>
+                                <input type="number" class="form-input" id="listingPrice" name="listingPrice" required="" placeholder="45">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="listingName">Listing Name</label>
+                        <input type="text" class="form-input" id="listingName" name="listingName" required="" placeholder="Cozy Downtown Loft">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="listingLocation">Location</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-map-marker-alt input-icon"></i>
+                            <input type="text" class="form-input" id="listingLocation" name="listingLocation" required="" placeholder="New York, NY">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Listing Image</label>
+                        <div class="image-upload-zone" id="uploadZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <p class="upload-text">Drag &amp; drop image here or click to browse</p>
+                            <p class="upload-subtext">Supports: JPG, PNG (max 5MB)</p>
+                        </div>
+                        <input type="file" id="imageUpload" name="image" accept="image/*">
+                        <div class="image-preview" id="imagePreview">
+                            <img src="https://storage.googleapis.com/forge-sites/6cfc0552f389101d4fdfee30c3c13a6731970e25688e0bc2ea46644165383e9b.webp?X-Goog-Algorithm=GOOG4-RSA-SHA256&amp;X-Goog-Credential=164061697651-compute%40developer.gserviceaccount.com%2F20251102%2Fauto%2Fstorage%2Fgoog4_request&amp;X-Goog-Date=20251102T165002Z&amp;X-Goog-Expires=86400&amp;X-Goog-SignedHeaders=host&amp;response-access-control-allow-origin=https%3A%2F%2Fforge.moonchild.ai&amp;X-Goog-Signature=21438cdbcbbce4999578c76d5506a8fe62c7dcb16eb25884ec3c7731fffd668ad290f1c83b3037cd2625f1d83279b75576968c09f7e43d8784dc06c613a5b0d79214c9992a66b6762b270f9a769e14ca2e1ba448b443c0cf449ba19b666957cb18c682dfa7ca01999827cffe7a01994e907dcc56a13f8f5ba0f93a7892e3e00d612ecfbd754fd94bbc6ab216998bffe5f70e43b0917e1f0fd36e813dd988c04c40e3fdf8448a8d6c2957a1b5552c9219516b398aaef59eaf8585ad83a9539ef3f3dbb4f944ebff50c535fef0d8fce6c782c6363ee005549a38cc2a30d6ccf3420ec62245de3813f2d04aa86b5762cd1b96748821a379d49ba5f1943cbf332d77" alt="Preview" class="preview-thumbnail" id="previewImage">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="secondary-button" id="cancelButton">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="primary-button">
+                            <i class="fas fa-save"></i> Save Listing
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Success Notification -->
+    <div class="success-notification" id="successNotification">
+        <i class="fas fa-check-circle" style="font-size: 24px;"></i>
+        <span id="successMessage">Action completed successfully!</span>
+    </div>
+
+    <script>
+        // State management
+        let isLoggedIn = false;
+        let pendingBookings = [
+            { id: 1, name: 'John Smith', email: 'john.smith@email.com', checkin: 'May 15, 2025', checkout: 'May 20, 2025', listing: 'Cozy Downtown Loft' },
+            { id: 2, name: 'Emily Johnson', email: 'emily.j@email.com', checkin: 'Jun 1, 2025', checkout: 'Jun 7, 2025', listing: 'Beach House Paradise' },
+            { id: 3, name: 'Michael Williams', email: 'm.williams@email.com', checkin: 'May 28, 2025', checkout: 'Jun 2, 2025', listing: 'Mountain Retreat' }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            checkLoginStatus();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+            // Logout button
+            document.getElementById('logoutButton').addEventListener('click', handleLogout);
+
+            // Listing form
+            document.getElementById('listingForm').addEventListener('submit', handleListingSubmit);
+            document.getElementById('cancelButton').addEventListener('click', resetListingForm);
+
+            // Image upload
+            const uploadZone = document.getElementById('uploadZone');
+            const imageUpload = document.getElementById('imageUpload');
+
+            uploadZone.addEventListener('click', () => imageUpload.click());
+            uploadZone.addEventListener('dragover', handleDragOver);
+            uploadZone.addEventListener('dragleave', handleDragLeave);
+            uploadZone.addEventListener('drop', handleDrop);
+            imageUpload.addEventListener('change', handleImageSelect);
+        }
+
+        // Check login status
+        function checkLoginStatus() {
+            const loggedIn = sessionStorage.getItem('adminLoggedIn');
+            if (loggedIn === 'true') {
+                showDashboard();
+            }
+        }
+
+        // Handle login
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Hardcoded credentials (for demo purposes)
+            if (username === 'admin' && password === 'bnb2025') {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showDashboard();
+            } else {
+                document.getElementById('loginError').classList.add('active');
+                setTimeout(() => {
+                    document.getElementById('loginError').classList.remove('active');
+                }, 3000);
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboardPage').classList.remove('active');
+            document.getElementById('loginForm').reset();
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').classList.add('active');
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('pendingCount').textContent = pendingBookings.length;
+        }
+
+        // Approve booking
+        function approveBooking(bookingId) {
+            // In real implementation, this would call the API
+            // const response = await fetch(`/bookings/approve`, {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ bookingId })
+            // });
+
+            // Simulate approval
+            const row = event.target.closest('tr');
+            row.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                pendingBookings = pendingBookings.filter(b => b.id !== bookingId);
+                row.remove();
+                updateStats();
+                showSuccessNotification('Booking approved successfully!');
+                
+                // Check if table is empty
+                const tbody = document.getElementById('bookingsTableBody');
+                if (tbody.children.length === 0) {
+                    showEmptyState();
+                }
+            }, 500);
+        }
+
+        // Delete booking
+        function deleteBooking(bookingId) {
+            if (!confirm('Are you sure you want to delete this booking?')) {
+                return;
+            }
+
+            // In real implementation, this would call the API
+            // const response = await fetch(`/bookings/${bookingId}`, {
+            //     method: 'DELETE'
+            // });
+
+            // Simulate deletion
+            const row = event.target.closest('tr');
+            row.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                pendingBookings = pendingBookings.filter(b => b.id !== bookingId);
+                row.remove();
+                updateStats();
+                showSuccessNotification('Booking deleted successfully!');
+                
+                // Check if table is empty
+                const tbody = document.getElementById('bookingsTableBody');
+                if (tbody.children.length === 0) {
+                    showEmptyState();
+                }
+            }, 500);
+        }
+
+        // Show empty state
+        function showEmptyState() {
+            const tbody = document.getElementById('bookingsTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-inbox"></i>
+                            </div>
+                            <p class="empty-state-text">No pending bookings</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Handle listing form submission
+        async function handleListingSubmit(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            
+            // In real implementation, this would call the API
+            // const response = await fetch('/listings', {
+            //     method: 'POST',
+            //     body: formData
+            // });
+
+            // Simulate success
+            showSuccessNotification('Listing saved successfully!');
+            resetListingForm();
+            
+            // Update active listings count
+            const currentCount = parseInt(document.getElementById('activeListings').textContent);
+            document.getElementById('activeListings').textContent = currentCount + 1;
+        }
+
+        // Reset listing form
+        function resetListingForm() {
+            document.getElementById('listingForm').reset();
+            document.getElementById('imagePreview').classList.remove('active');
+        }
+
+        // Image upload handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('imageUpload').files = files;
+                previewImage(files[0]);
+            }
+        }
+
+        function handleImageSelect(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                previewImage(files[0]);
+            }
+        }
+
+        function previewImage(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                    document.getElementById('imagePreview').classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Show success notification
+        function showSuccessNotification(message) {
+            const notification = document.getElementById('successNotification');
+            document.getElementById('successMessage').textContent = message;
+            notification.classList.add('active');
+            
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 3000);
+        }
+
+        // Make functions global
+        window.approveBooking = approveBooking;
+        window.deleteBooking = deleteBooking;
+    </script>
+
+</body></html>
