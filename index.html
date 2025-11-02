@@ -1,32 +1,822 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>The BnB Booking</title>
-  <link rel="stylesheet" href="css/client.css" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Stay - Step-by-Step</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAFAF9;
+            color: #1F2937;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: #0D9488;
+            color: white;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            position: static;
+            width: auto;
+            box-shadow: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .back-button:active {
+            opacity: 0.7;
+        }
+
+        .header-content {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .step-indicator {
+            font-size: 0.875rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-container {
+            padding: 1.5rem 1.25rem;
+            max-width: 100%;
+        }
+
+        .step {
+            display: none;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .field-group {
+            margin-bottom: 2rem;
+        }
+
+        .field-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .field-help {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            font-size: 1.125rem;
+            font-family: 'Inter', sans-serif;
+            color: #1F2937;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            background: white;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0D9488;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1);
+            transform: translateY(-1px);
+        }
+
+        input::placeholder {
+            color: #9CA3AF;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 20px;
+            padding-right: 3rem;
+        }
+
+        .date-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .listing-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            position: relative;
+        }
+
+        .listing-card:active {
+            transform: scale(0.98);
+        }
+
+        .listing-card.selected {
+            border-color: #0D9488;
+            background: rgba(13,148,136,0.05);
+        }
+
+        .listing-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .listing-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .listing-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: #1F2937;
+        }
+
+        .listing-details {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .listing-price {
+            font-weight: 600;
+            color: #0D9488;
+            font-size: 1rem;
+        }
+
+        .listing-radio {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #E5E7EB;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .listing-card.selected .listing-radio {
+            border-color: #0D9488;
+            background: #0D9488;
+            box-shadow: inset 0 0 0 4px white;
+        }
+
+        .guest-counter {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            background: white;
+            margin-bottom: 1rem;
+        }
+
+        .guest-info {
+            flex: 1;
+        }
+
+        .guest-type {
+            font-weight: 500;
+            font-size: 1rem;
+            color: #1F2937;
+        }
+
+        .guest-description {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+
+        .counter-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .counter-button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #E5E7EB;
+            background: white;
+            color: #1F2937;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: static;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .counter-button:active {
+            transform: scale(0.9);
+            background: #F3F4F6;
+        }
+
+        .counter-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .counter-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            min-width: 32px;
+            text-align: center;
+        }
+
+        .summary-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #E5E7EB;
+        }
+
+        .summary-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            color: #1F2937;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .summary-label {
+            color: #6B7280;
+            font-size: 0.9375rem;
+        }
+
+        .summary-value {
+            font-weight: 500;
+            color: #1F2937;
+            font-size: 0.9375rem;
+        }
+
+        .total-row {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #E5E7EB;
+        }
+
+        .total-row .summary-label {
+            font-weight: 600;
+            color: #1F2937;
+            font-size: 1.125rem;
+        }
+
+        .total-row .summary-value {
+            font-weight: 700;
+            color: #0D9488;
+            font-size: 1.25rem;
+        }
+
+        .next-button {
+            position: fixed;
+            bottom: 1rem;
+            left: 1.25rem;
+            right: 1.25rem;
+            background: #F97316;
+            color: white;
+            padding: 1.125rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(249,115,22,0.3);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            z-index: 50;
+        }
+
+        .next-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(249,115,22,0.3);
+        }
+
+        .next-button:disabled {
+            background: #D1D5DB;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .success-animation {
+            text-align: center;
+            padding: 3rem 1.5rem;
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-message {
+            font-size: 1rem;
+            color: #6B7280;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                padding-top: 2rem;
+            }
+
+            header {
+                border-radius: 12px 12px 0 0;
+            }
+
+            .form-container {
+                max-width: 480px;
+                margin: 0 auto;
+            }
+
+            .next-button {
+                position: static;
+                width: 100%;
+                margin-top: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Book Your Stay</h1>
-    <nav>
-      <a href="admin.html">Go to Admin Dashboard</a>
-    </nav>
-  </header>
+    <div style="max-width: 480px; width: 100%; margin: 0 auto; background: white; min-height: 100vh; position: relative;">
+        <header>
+            <button class="back-button" onclick="goBack()" id="backBtn">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="header-content">
+                <h1 class="header-title">Book Your Stay</h1>
+                <span class="step-indicator" id="stepIndicator">1/4</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 25%"></div>
+            </div>
+        </header>
 
-  <form id="bookingForm">
-    <input type="text" name="name" placeholder="Full Name" required />
-    <input type="email" name="email" placeholder="Email" required />
-    <input type="date" name="checkin" required />
-    <input type="date" name="checkout" required />
-    <select name="listing" required>
-      <option value="">Select Listing</option>
-      <option value="bnb001">Ocean View</option>
-      <option value="bnb002">Mountain Cabin</option>
-    </select>
-    <button type="submit">Book Now</button>
-  </form>
+        <form class="form-container" onsubmit="handleSubmit(event)" id="bookingForm">
+            <!-- Step 1: Listing Selection -->
+            <div class="step active" id="step1">
+                <div class="field-group">
+                    <label class="field-label">Select Your Property</label>
+                    <p class="field-help">Choose from our available listings</p>
+                    
+                    <div class="listing-card" onclick="selectListing(1)" id="listing1">
+                        <img src="https://storage.googleapis.com/forge-sites/e7dad3cfa082ae8c764bd66266a308c8fcad65ccdf0b8bcdb7a4f9f0d26d4d15.webp?X-Goog-Algorithm=GOOG4-RSA-SHA256&amp;X-Goog-Credential=164061697651-compute%40developer.gserviceaccount.com%2F20251102%2Fauto%2Fstorage%2Fgoog4_request&amp;X-Goog-Date=20251102T142122Z&amp;X-Goog-Expires=86400&amp;X-Goog-SignedHeaders=host&amp;response-access-control-allow-origin=https%3A%2F%2Fforge.moonchild.ai&amp;X-Goog-Signature=b8d1eea6253ba9ad2d4fd3188dc4d7a3f974c4884a62f539b9307e54fd448858b6503320f2649539fd6c7398c2666798c8da6705247f83d97c63282af81f0c771701414dc0c5d63404d8ab21aaef5fb7b95ae51dc0e3d0221fd2c7dde88731ec4b405251900f274b18731b12b90896b14d227a33ebf6b79a1901c06285dbfb8d345bfaeccad0c753dc2293604f87c33dd087654f2825fe1062cf6f3bde9a17bad76513601d7a5bc839e85934f8ebb4719cf5cc89ec148e31a448ea4a8dafa54df03fab2d964985fe283c05725f92ff7b4174555d4673c6947471defe1a3f39e99fb629d3af1b24fd6cad69c4ab51993205426ac7535ba1f12ef28297d0b4686a" alt="Cozy Mountain Cabin" class="listing-image">
+                        <div class="listing-info">
+                            <div class="listing-name">Cozy Mountain Cabin</div>
+                            <div class="listing-details">2 beds • 1 bath • Mountain view</div>
+                            <div class="listing-price">$120 / night</div>
+                        </div>
+                        <div class="listing-radio"></div>
+                    </div>
 
-  <script src="js/client.js"></script>
-</body>
-</html>
+                    <div class="listing-card" onclick="selectListing(2)" id="listing2">
+                        <img src="https://storage.googleapis.com/forge-sites/12c52cd06a27c0565b5d30afc0e6101c374dbd751f46a9c2e7b0e7d45ef06e49.webp?X-Goog-Algorithm=GOOG4-RSA-SHA256&amp;X-Goog-Credential=164061697651-compute%40developer.gserviceaccount.com%2F20251102%2Fauto%2Fstorage%2Fgoog4_request&amp;X-Goog-Date=20251102T142122Z&amp;X-Goog-Expires=86400&amp;X-Goog-SignedHeaders=host&amp;response-access-control-allow-origin=https%3A%2F%2Fforge.moonchild.ai&amp;X-Goog-Signature=43321dc14cc38e82c08ff3f1b5c32858dc70759b6042bc2aeed8a1b8c3e782a8e9ccd81c3f99194e9658f1ebe4970d3d97a425b118b5d17e9677cb1ca9abda802ddc6c9cf38ef47bca13f0257f9c026121e80bcc5f06e3a456ad1eac7289f089ee2582f413b466df96cea4b781f0d3e3f61636f0aa93437fdad262d67302919bb2799d09f4f93a2eb5a1748b4e8177f436c0b129e329859b26ba71570a068a46276b842486adfeabba23692db1b50eb629c5e1a41517a27d126f0d0a9040adca96ed95154c703c2c2f519ff0b9b5baf424d4d858db0700b4713f63902e81f0347167af5d190cc9ee51d5af1636d9ae8e7111537d201d932017b62f5361bbdc59" alt="Beachfront Villa" class="listing-image">
+                        <div class="listing-info">
+                            <div class="listing-name">Beachfront Villa</div>
+                            <div class="listing-details">3 beds • 2 baths • Ocean view</div>
+                            <div class="listing-price">$250 / night</div>
+                        </div>
+                        <div class="listing-radio"></div>
+                    </div>
+
+                    <div class="listing-card" onclick="selectListing(3)" id="listing3">
+                        <img src="https://storage.googleapis.com/forge-sites/46448b2936534641f86edc8d084aa3782dba4afb08f2bffff977e42e4b310fe8.webp?X-Goog-Algorithm=GOOG4-RSA-SHA256&amp;X-Goog-Credential=164061697651-compute%40developer.gserviceaccount.com%2F20251102%2Fauto%2Fstorage%2Fgoog4_request&amp;X-Goog-Date=20251102T142122Z&amp;X-Goog-Expires=86400&amp;X-Goog-SignedHeaders=host&amp;response-access-control-allow-origin=https%3A%2F%2Fforge.moonchild.ai&amp;X-Goog-Signature=8e27bf2f45c5ae33675e7eb8c82d85edbe4e85fafa41414fac0f44773067364c74ca963ab9edfad551df617554eec01f18243e5cfb023f371e15f6c1321d41fc25507e4d096ced4912937eaf8da3b399abe64f6494c651a33f114d2a12ade572a2e002b410bca1345c570013ad6fadb46d5592bddd832681aeccaf726345824e0593756d76525bd7016405df554b3344657c288a7c832622fd204e36699818bb0c114792d23fd64cbb00dd01ca1f9ca8e77788daf9363346a03c3612f47b0108563e3a1dec98d473570d6765f92fbd96f5a726fddce0d84fc17b0efc982121df3d7d59d14feebd4cd5ca5dbfb7a80c41ba9eec97969a61b119c7675793827e8c" alt="Downtown Loft" class="listing-image">
+                        <div class="listing-info">
+                            <div class="listing-name">Downtown Loft</div>
+                            <div class="listing-details">1 bed • 1 bath • City view</div>
+                            <div class="listing-price">$180 / night</div>
+                        </div>
+                        <div class="listing-radio"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Dates -->
+            <div class="step" id="step2">
+                <div class="field-group">
+                    <label class="field-label">When are you visiting?</label>
+                    <p class="field-help">Select your check-in and check-out dates</p>
+                    
+                    <div class="date-row">
+                        <div>
+                            <label class="field-label" for="checkin">Check-in</label>
+                            <input type="date" id="checkin" name="checkin" required="">
+                        </div>
+                        <div>
+                            <label class="field-label" for="checkout">Check-out</label>
+                            <input type="date" id="checkout" name="checkout" required="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Guests -->
+            <div class="step" id="step3">
+                <div class="field-group">
+                    <label class="field-label">Who's coming?</label>
+                    <p class="field-help">Add guests to your reservation</p>
+                    
+                    <div class="guest-counter">
+                        <div class="guest-info">
+                            <div class="guest-type">Adults</div>
+                            <div class="guest-description">Ages 13 or above</div>
+                        </div>
+                        <div class="counter-controls">
+                            <button type="button" class="counter-button" onclick="changeGuests('adults', -1)" id="adultsDown">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="counter-value" id="adultsCount">1</span>
+                            <button type="button" class="counter-button" onclick="changeGuests('adults', 1)" id="adultsUp">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="guest-counter">
+                        <div class="guest-info">
+                            <div class="guest-type">Children</div>
+                            <div class="guest-description">Ages 2-12</div>
+                        </div>
+                        <div class="counter-controls">
+                            <button type="button" class="counter-button" onclick="changeGuests('children', -1)" id="childrenDown">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="counter-value" id="childrenCount">0</span>
+                            <button type="button" class="counter-button" onclick="changeGuests('children', 1)" id="childrenUp">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="guest-counter">
+                        <div class="guest-info">
+                            <div class="guest-type">Infants</div>
+                            <div class="guest-description">Under 2</div>
+                        </div>
+                        <div class="counter-controls">
+                            <button type="button" class="counter-button" onclick="changeGuests('infants', -1)" id="infantsDown">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="counter-value" id="infantsCount">0</span>
+                            <button type="button" class="counter-button" onclick="changeGuests('infants', 1)" id="infantsUp">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Review -->
+            <div class="step" id="step4">
+                <div class="field-group">
+                    <label class="field-label">Review Your Booking</label>
+                    <p class="field-help">Please confirm your reservation details</p>
+                    
+                    <div class="summary-section">
+                        <div class="summary-title">Property</div>
+                        <div class="summary-row">
+                            <span class="summary-label">Listing</span>
+                            <span class="summary-value" id="summaryListing">-</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-section">
+                        <div class="summary-title">Stay Details</div>
+                        <div class="summary-row">
+                            <span class="summary-label">Check-in</span>
+                            <span class="summary-value" id="summaryCheckin">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Check-out</span>
+                            <span class="summary-value" id="summaryCheckout">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Nights</span>
+                            <span class="summary-value" id="summaryNights">-</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-section">
+                        <div class="summary-title">Guests</div>
+                        <div class="summary-row">
+                            <span class="summary-label">Total guests</span>
+                            <span class="summary-value" id="summaryGuests">-</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-section">
+                        <div class="summary-title">Price Breakdown</div>
+                        <div class="summary-row">
+                            <span class="summary-label" id="nightlyRateLabel">$120 × 0 nights</span>
+                            <span class="summary-value" id="nightlyRateValue">$0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Service fee</span>
+                            <span class="summary-value" id="serviceFee">$0</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span class="summary-label">Total</span>
+                            <span class="summary-value" id="totalPrice">$0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Success -->
+            <div class="step" id="step5">
+                <div class="success-animation">
+                    <svg class="checkmark" viewBox="0 0 80 80">
+                        <circle cx="40" cy="40" r="35" fill="#10B981" opacity="0.1"></circle>
+                        <circle cx="40" cy="40" r="30" fill="#10B981"></circle>
+                        <path d="M25 40 L35 50 L55 30" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    <h2 class="success-title">Booking Confirmed!</h2>
+                    <p class="success-message">Your reservation has been successfully submitted. We've sent a confirmation email with all the details.</p>
+                </div>
+            </div>
+
+            <button type="button" class="next-button" id="nextBtn" onclick="nextStep()" disabled="">
+                Next
+            </button>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        let selectedListing = null;
+        let guestCounts = {
+            adults: 1,
+            children: 0,
+            infants: 0
+        };
+
+        const listingData = {
+            1: { name: 'Cozy Mountain Cabin', price: 120 },
+            2: { name: 'Beachfront Villa', price: 250 },
+            3: { name: 'Downtown Loft', price: 180 }
+        };
+
+        function selectListing(id) {
+            // Remove selected class from all listings
+            document.querySelectorAll('.listing-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked listing
+            document.getElementById(`listing${id}`).classList.add('selected');
+            selectedListing = id;
+            
+            updateNextButton();
+        }
+
+        function changeGuests(type, change) {
+            guestCounts[type] = Math.max(0, guestCounts[type] + change);
+            
+            // Adults minimum is 1
+            if (type === 'adults' && guestCounts[type] < 1) {
+                guestCounts[type] = 1;
+            }
+            
+            document.getElementById(`${type}Count`).textContent = guestCounts[type];
+            
+            // Update button states
+            document.getElementById(`${type}Down`).disabled = 
+                (type === 'adults' && guestCounts[type] <= 1) || 
+                (type !== 'adults' && guestCounts[type] <= 0);
+            
+            updateNextButton();
+        }
+
+        function updateNextButton() {
+            const btn = document.getElementById('nextBtn');
+            
+            if (currentStep === 1) {
+                btn.disabled = !selectedListing;
+                btn.textContent = 'Next';
+            } else if (currentStep === 2) {
+                const checkin = document.getElementById('checkin').value;
+                const checkout = document.getElementById('checkout').value;
+                btn.disabled = !checkin || !checkout;
+                btn.textContent = 'Next';
+            } else if (currentStep === 3) {
+                btn.disabled = false;
+                btn.textContent = 'Review Booking';
+            } else if (currentStep === 4) {
+                btn.disabled = false;
+                btn.textContent = 'Confirm Booking';
+            }
+        }
+
+        function nextStep() {
+            if (currentStep === 4) {
+                // Submit form
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                currentStep = 5;
+                document.getElementById('step5').classList.add('active');
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('backBtn').style.display = 'none';
+                document.getElementById('stepIndicator').textContent = '✓';
+                updateProgress();
+                return;
+            }
+
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep++;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            
+            if (currentStep === 4) {
+                updateSummary();
+            }
+            
+            updateProgress();
+            updateNextButton();
+        }
+
+        function goBack() {
+            if (currentStep > 1) {
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                currentStep--;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                updateProgress();
+                updateNextButton();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('stepIndicator').textContent = `${currentStep}/${totalSteps}`;
+        }
+
+        function updateSummary() {
+            const listing = listingData[selectedListing];
+            const checkin = new Date(document.getElementById('checkin').value);
+            const checkout = new Date(document.getElementById('checkout').value);
+            const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+            
+            const subtotal = listing.price * nights;
+            const serviceFee = Math.round(subtotal * 0.12);
+            const total = subtotal + serviceFee;
+            
+            const totalGuests = guestCounts.adults + guestCounts.children + guestCounts.infants;
+            
+            document.getElementById('summaryListing').textContent = listing.name;
+            document.getElementById('summaryCheckin').textContent = checkin.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            document.getElementById('summaryCheckout').textContent = checkout.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            document.getElementById('summaryNights').textContent = `${nights} night${nights !== 1 ? 's' : ''}`;
+            document.getElementById('summaryGuests').textContent = `${totalGuests} guest${totalGuests !== 1 ? 's' : ''}`;
+            
+            document.getElementById('nightlyRateLabel').textContent = `$${listing.price} × ${nights} night${nights !== 1 ? 's' : ''}`;
+            document.getElementById('nightlyRateValue').textContent = `$${subtotal.toLocaleString()}`;
+            document.getElementById('serviceFee').textContent = `$${serviceFee.toLocaleString()}`;
+            document.getElementById('totalPrice').textContent = `$${total.toLocaleString()}`;
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+        }
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('checkin').setAttribute('min', today);
+        document.getElementById('checkout').setAttribute('min', today);
+
+        // Update checkout min date when checkin changes
+        document.getElementById('checkin').addEventListener('change', function() {
+            const checkinDate = new Date(this.value);
+            checkinDate.setDate(checkinDate.getDate() + 1);
+            const minCheckout = checkinDate.toISOString().split('T')[0];
+            document.getElementById('checkout').setAttribute('min', minCheckout);
+            updateNextButton();
+        });
+
+        document.getElementById('checkout').addEventListener('change', updateNextButton);
+
+        // Initialize button states
+        document.getElementById('adultsDown').disabled = true;
+        document.getElementById('childrenDown').disabled = true;
+        document.getElementById('infantsDown').disabled = true;
+    </script>
+
+</body></html>
